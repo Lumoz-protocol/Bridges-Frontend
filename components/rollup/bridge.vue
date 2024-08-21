@@ -143,7 +143,7 @@
         </Wallet> -->
         <!-- <RollupSubmitButton v-if="tonWalletStore.account && walletStore.account" :submit="submit" :reverse="reverse" :balance="reverse ? rollupBridgeStore.token?.rollupBalance : rollupBridgeStore.token?.layer1Balance" :amount="amount" :fees="fees" :fees-loading="feesLoading" @on-click="confirmButton" /> -->
         <CommonButton large class="w-full text-base mt-4" @click="confirmButton">
-            {{ $t('wallet.connect') }}
+            Transaction
           </CommonButton>
       </div>
     </div>
@@ -331,7 +331,7 @@ async function confirm() {
               }
           ]
       }
-
+    console.log(tonWalletStore.wallet, transaction)
     await tonWalletStore.wallet.sendTransaction(transaction);
     }
     

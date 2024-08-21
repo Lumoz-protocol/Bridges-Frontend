@@ -115,9 +115,9 @@ const getStatus = async () => {
 
     getS()
 
-    timer = setInterval(() => {
-        getS()
-    }, 1000 * 2 * 60)
+    // timer = setInterval(() => {
+    //     getS()
+    // }, 1000 * 2 * 60)
 }
 
 const getS = async() => {

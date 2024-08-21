@@ -102,9 +102,9 @@ export const useRollupBridgeStore = defineStore('rollup-bridge', {
     },
     async initActivities(account: string) {
       await this.getActivities(account)
-      timer = setInterval(() => {
-        this.getActivities(account)
-      }, 10 * 1000)
+      // timer = setInterval(() => {
+      //   this.getActivities(account)
+      // }, 10 * 1000)
     },
     stopActivities() {
       if (timer) {
