@@ -30,7 +30,7 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      title: 'Lumoz | OP Bridge',
+      title: 'UXLINK | Bridge',
       meta: [
         { charset: 'utf-8' },
         {

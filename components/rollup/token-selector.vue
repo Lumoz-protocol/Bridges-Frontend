@@ -14,7 +14,7 @@
     <el-dialog
       v-model="tokenModal"
       :width="modalWidth"
-      class="lumoz-node-dialog"
+      class="uxlink-node-dialog"
       center
       effect="dark"
       :align-center="true"

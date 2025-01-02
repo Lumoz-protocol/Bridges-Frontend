@@ -18,20 +18,14 @@ const otherNetwork = JSON.parse(JSON.stringify(NODE_NETWORKS)).map(item => {
   }
 })
 const networks = [
-  // {
-  //   chainId: 51178,
-  //   name: 'Lumoz',
-  //   currency: 'MOZ',
-  //   explorerUrl: 'https://lumoz.info',
-  //   rpcUrl: 'https://alpha-us-http-geth.lumoz.org'
-  // },
+
   ...otherNetwork
 ]
 
 const metadata = {
-  name: 'Lumoz',
-  description: 'Lumoz',
-  url: 'https://lumoz.org',
+  name: 'UXLINK',
+  description: 'UXLINK',
+  url: 'https://docs.uxlink.io/layer/whitepaper/white-paper',
   icons: []
 }
 
@@ -64,7 +58,7 @@ const modal = createWeb3Modal({
     enableEIP6963: true,
     enableInjected: true,
     enableCoinbase: false,
-    rpcUrl: 'https://alpha-us-http-geth.lumoz.org'
+    rpcUrl: 'https://rpc.ankr.com/eth_sepolia'
   }),
   customWallets,
   chains: networks,

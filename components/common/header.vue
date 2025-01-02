@@ -64,7 +64,6 @@ const menuShow = ref(false)
 const navHide = ref(false)
 
 const singleMenus = ref([
-  // { name: 'OKX Launchpad', link: 'https://www.okx.com/web3/marketplace/launchpad/event/lumoz' },
   // { name: vm.$t('header.campaign'), link: '/campaign' }
 ])
 
