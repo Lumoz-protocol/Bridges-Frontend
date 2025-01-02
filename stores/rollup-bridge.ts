@@ -108,6 +108,7 @@ export const useRollupBridgeStore = defineStore('rollup-bridge', {
         }
       })
       const withdrawMessages = await messenger.getWithdrawalsByAddress(account)
+      console.log(withdrawMessages)
       this.activities = withdrawMessages
     }
   }

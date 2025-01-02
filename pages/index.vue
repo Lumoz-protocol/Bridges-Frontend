@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 useHead({
-    title: 'Matr1x - Bridge'
+    title: 'UXLINK - Bridge'
 })
 
 const bottomAbsolute = ref(true)

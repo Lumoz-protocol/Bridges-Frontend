@@ -143,6 +143,7 @@ import { L2Config } from '@/constants/rollup-bridge/networks'
 import { useWalletStore, useRollupBridgeStore } from '@/stores'
 import { getBridge } from '@/stores/wallet'
 import { notifySuccess, notifyError } from '@/libs/utils'
+import { Erc20Contract, OptimismPortalContract, L1StandardBridgeContract, L2ToL1MessagePasserContract } from '~/libs/ethers/contract'
 
 const vm = getCurrentInstance()?.proxy
 const walletStore = useWalletStore()
@@ -191,7 +192,6 @@ async function confirmButton() {
   try {
     await confirm()
   } catch (e) {
-    console.log(e)
     if (e.code === -32603) {
       notifyError(vm?.$t('insufficient1') + reverse.value ? 'USDC' : 'ETH' + vm?.$t('insufficient2'))
     } else {
@@ -218,6 +218,7 @@ function storeSubmit() {
     : rollupBridgeStore.layer1.explorerUrl
   const symbol = rollupBridgeStore.token.symbol
   const decimals = reverse.value ? rollupBridgeStore.token.rollupDecimals : rollupBridgeStore.token.layer1Decimals
+  const transAddress = walletStore.account
   return {
     transAmount,
     transNetwork,
@@ -227,7 +228,8 @@ function storeSubmit() {
     chainId: rollupBridgeStore.rollup.chainId,
     reversed: reverse.value,
     decimals,
-    symbol
+    symbol,
+    transAddress
   }
 }
 
@@ -244,11 +246,11 @@ async function confirm() {
     token,
     decimals,
     reversed,
-    symbol
+    symbol,
+    transAddress
   } = storeSubmitStatus
-  
   if (
-    !reversed && tokenContractAddress !== BASE_TOKEN_CONTRACT_URL
+    tokenContractAddress !== BASE_TOKEN_CONTRACT_URL
   ) {
     if (submit.value === 0) {
       submit.value = 1
@@ -259,21 +261,58 @@ async function confirm() {
     if (!switched) {
       throw new Error(vm?.$t('notSwitch'))
     }
-    const messenger = await getMessenger(reversed, transNetwork, destNetwork)
-    let allowance = await messenger.approval(token.layer1Address, token.rollupAddress)
-    allowance = ethers.utils.formatUnits(allowance, decimals)
-    if (Number(allowance) < transAmount) {
-      submit.value = 2
-      const result = await messenger.approveERC20(token.layer1Address, token.rollupAddress, ethers.utils.parseUnits('10000000000', decimals))
+    if (!reversed) {
+      let erc20Contract = new Erc20Contract(tokenContractAddress, transNetwork.rpcUrl, transNetwork.chainId)
+      const allowance = await erc20Contract.allowance(transAddress, token.gasToken ? L2Config?.OptimismPortal : L2Config?.L1StandardBridge)
+      if (Number(allowance) < transAmount) {
+        submit.value = 2
+        erc20Contract = new Erc20Contract(
+          tokenContractAddress,
+          transNetwork.rpcUrl,
+          transNetwork.chainId,
+          getBridge().web3Provider.getSigner()
+        )
+        // if (Number(allowance)) {
+        //   const result = await erc20Contract.approveToZero(token.gasToken ? L2Config?.OptimismPortal : L2Config?.L1StandardBridge)
+        //   await result.wait()
+        // }
+        const result = await erc20Contract.approve(token.gasToken ? L2Config?.OptimismPortal : L2Config?.L1StandardBridge)
 
-      if (!result) {
+        if (!result) {
+          submit.value = 0
+          return
+        }
+        await result.wait()
         submit.value = 0
+        notifySuccess(vm?.$t('home.approveSuccess'))
         return
       }
-      await result.wait()
-      submit.value = 0
-      notifySuccess(vm?.$t('home.approveSuccess'))
-      return
+    } else {
+      let erc20Contract = new Erc20Contract(tokenContractAddress, transNetwork.rpcUrl, transNetwork.chainId)
+      const allowance = await erc20Contract.allowance(transAddress, L2Config?.L2StandardBridge)
+      if (Number(allowance) < transAmount) {
+        submit.value = 2
+        erc20Contract = new Erc20Contract(
+          tokenContractAddress,
+          transNetwork.rpcUrl,
+          transNetwork.chainId,
+          getBridge().web3Provider.getSigner()
+        )
+        // if (Number(allowance)) {
+        //   const result = await erc20Contract.approveToZero(token.gasToken ? L2Config?.OptimismPortal : L2Config?.L1StandardBridge)
+        //   await result.wait()
+        // }
+        const result = await erc20Contract.approve(L2Config?.L2StandardBridge)
+
+        if (!result) {
+          submit.value = 0
+          return
+        }
+        await result.wait()
+        submit.value = 0
+        notifySuccess(vm?.$t('home.approveSuccess'))
+        return
+      }
     }
   }
 
@@ -288,13 +327,20 @@ async function confirm() {
   let tx:any = null
   if (tokenContractAddress === BASE_TOKEN_CONTRACT_URL) {
     if (!reversed) {
-      tx = await messenger.depositETH(ethers.utils.parseUnits(transAmount.toString(), decimals))
+      // const contract = new OptimismPortalContract(getBridge().web3Provider.getSigner())
+      // tx = await contract.depositERC20Transaction(transAddress, transAmount, decimals)
     } else {
       tx = await messenger.withdrawETH(ethers.utils.parseUnits(transAmount.toString(), decimals))
     }
   } else {
     if (!reversed) {
-      tx = await messenger.depositERC20(token.layer1Address, token.rollupAddress, ethers.utils.parseUnits(transAmount.toString(), decimals))
+      if (token.gasToken) {
+        const contract = new OptimismPortalContract(getBridge().web3Provider.getSigner())
+        tx = await contract.depositERC20Transaction(transAddress, transAmount, decimals)
+      } else {
+        const contract = new L1StandardBridgeContract(getBridge().web3Provider.getSigner())
+        tx = await contract.bridgeERC20(token.layer1Address, token.rollupAddress, transAmount, decimals)
+      }
     } else {
       tx = await messenger.withdrawERC20(token.layer1Address, token.rollupAddress, ethers.utils.parseUnits(transAmount.toString(), decimals))
     }
@@ -349,8 +395,6 @@ const getMessenger = async(reversed: boolean, transNetwork: any, destNetwork: an
   }
   return messenger
 }
-
-
 
 const setMax = () => {
   const tokenContractAddress = reverse.value

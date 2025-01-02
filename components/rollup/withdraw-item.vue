@@ -79,6 +79,9 @@ onMounted(() => {
 })
 
 const symbol = computed(() => {
+    if (props.item.l2Token == L2Config?.L2BaseTag) {
+        return TOKENS[0].symbol
+    }
     const item = TOKENS.find(item => (item.rollupAddress.toLowerCase() === props.item.l2Token.toLowerCase()) || (item.layer1Address.toLowerCase() === props.item.l1Token.toLowerCase()))
     if (item) {
         return item.symbol
@@ -87,7 +90,13 @@ const symbol = computed(() => {
 })
 
 const amount = computed(() => {
-    const item = TOKENS.find(item => (item.rollupAddress.toLowerCase() === props.item.l2Token.toLowerCase()) || (item.layer1Address.toLowerCase() === props.item.l1Token.toLowerCase()))
+    let item:any = null
+    if (props.item.l2Token == L2Config?.L2BaseTag) {
+        item = TOKENS[0]
+    } else {
+        item = TOKENS.find(item => (item.rollupAddress.toLowerCase() === props.item.l2Token.toLowerCase()) || (item.layer1Address.toLowerCase() === props.item.l1Token.toLowerCase()))
+    }
+    
     if (item) {
         try {
             return Number(ethers.utils.formatUnits(props.item.amount, item.layer1Decimals))

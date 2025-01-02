@@ -7,11 +7,11 @@ const getConfig = (network: string) => {
   switch (network) {
     case 'testnet':
       return {
-        BRIDGE_SERVICE_API: 'https://alpha-zkrollup-service.lumoz.org/matr1x/transactions/'
+        BRIDGE_SERVICE_API: 'https://alpha-zkrollup-service.lumoz.org/uxlink/transactions/'
       }
     case 'mainnet':
       return {
-         BRIDGE_SERVICE_API: 'https://alpha-zkrollup-service.lumoz.org/matr1x/transactions/'
+         BRIDGE_SERVICE_API: ''
       }
   }
 }

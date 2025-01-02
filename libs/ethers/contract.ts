@@ -1,8 +1,12 @@
 import { ethers, BigNumber } from 'ethers'
-import Decimal from 'decimal.js'
 import Erc20Abi from '../abi/erc20.abi.json'
 import { BASE_TOKEN_CONTRACT_URL } from '@/constants'
 import { Multicall, ContractCallContext } from 'ethereum-multicall'
+import { L2Config, LAYER1, ROLLUP } from '@/constants/rollup-bridge/networks'
+import OPTIMISMPORTAL from '../abi/OptimismPortal.json'
+import L1STANDARDBRIDGE from '../abi/L1StandardBridge.json'
+import L2TOL1MESSAGEPASSER from '../abi/L2ToL1MessagePasser.json'
+import L2STANDARDBRIDGE from '../abi/L2StandardBridge.json'
 
 export class Erc20Contract {
   contract: ethers.Contract
@@ -46,6 +50,14 @@ export class Erc20Contract {
 
   async approve(spenderContractAddress: string) {
     const max = 100000000
+    return await this.contract.approve(
+      spenderContractAddress,
+      ethers.utils.parseUnits(max.toString(), await this.contract.decimals())
+    )
+  }
+
+  async approveToZero(spenderContractAddress: string) {
+    const max = 0
     return await this.contract.approve(
       spenderContractAddress,
       ethers.utils.parseUnits(max.toString(), await this.contract.decimals())
@@ -100,4 +112,86 @@ export const getBalancesByAddresses = async(network: any, account: string, erc20
     }
   }
   return list
+}
+
+
+export class OptimismPortalContract {
+  contract: ethers.Contract
+  jsonRpcProvider: any
+
+  constructor(signer?: any) {
+    this.jsonRpcProvider = new ethers.providers.StaticJsonRpcProvider(LAYER1?.rpcUrl, { name: '', chainId: LAYER1?.chainId })
+    this.contract = new ethers.Contract(
+      L2Config.OptimismPortal,
+      OPTIMISMPORTAL,
+      signer || this.jsonRpcProvider
+    )
+  }
+
+  async depositERC20Transaction(address: string, amount: number, decimals: number) {
+    const _amount = ethers.utils.parseUnits(amount.toString(), decimals)
+    return await this.contract.depositERC20Transaction(address, _amount, _amount, 50000, false, '0x')
+  }
+}
+
+export class L1StandardBridgeContract {
+  contract: ethers.Contract
+  jsonRpcProvider: any
+
+  constructor(signer?: any) {
+    this.jsonRpcProvider = new ethers.providers.StaticJsonRpcProvider(LAYER1?.rpcUrl, { name: '',  chainId: LAYER1?.chainId })
+    this.contract = new ethers.Contract(
+      L2Config?.L1StandardBridge,
+      L1STANDARDBRIDGE,
+      signer || this.jsonRpcProvider
+    )
+  }
+
+  async bridgeETH(amount: string, decimals: number) {
+    const _amount = ethers.utils.parseUnits(amount.toString(), decimals)
+    return await this.contract.bridgeETH(50000, '0x', { value: _amount })
+  }
+
+  async bridgeERC20(localToken: string, remoteToken: string,  amount: string, decimals: number) {
+    const _amount = ethers.utils.parseUnits(amount.toString(), decimals)
+    return await this.contract.bridgeERC20(localToken, remoteToken, _amount, 50000, '0x')
+  }
+}
+
+export class L2ToL1MessagePasserContract {
+  contract: ethers.Contract
+  jsonRpcProvider: any
+
+  constructor(signer?: any) {
+    this.jsonRpcProvider = new ethers.providers.StaticJsonRpcProvider(ROLLUP?.rpcUrl, { name: '',  chainId: ROLLUP?.chainId })
+    this.contract = new ethers.Contract(
+      L2Config?.L2ToL1MessagePasser,
+      L2TOL1MESSAGEPASSER,
+      signer || this.jsonRpcProvider
+    )
+  }
+
+  async initiateWithdrawal(address:string, amount: string, decimals: number) {
+    const _amount = ethers.utils.parseUnits(amount.toString(), decimals)
+    return await this.contract.initiateWithdrawal(address, 50000, '0x', { value: _amount })
+  }
+}
+
+export class L2StandardBridgeContract {
+  contract: ethers.Contract
+  jsonRpcProvider: any
+
+  constructor(signer?: any) {
+    this.jsonRpcProvider = new ethers.providers.StaticJsonRpcProvider(ROLLUP?.rpcUrl, { name: '',  chainId: ROLLUP?.chainId })
+    this.contract = new ethers.Contract(
+      L2Config?.L2StandardBridge,
+      L2STANDARDBRIDGE,
+      signer || this.jsonRpcProvider
+    )
+  }
+
+  async withdraw(tokenAddress:string, amount: string, decimals: number) {
+    const _amount = ethers.utils.parseUnits(amount.toString(), decimals)
+    return await this.contract.withdraw(tokenAddress, _amount, 50000, '0x')
+  }
 }

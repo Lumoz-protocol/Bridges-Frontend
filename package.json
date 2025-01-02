@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@element-plus/nuxt": "^1.0.7",
-    "@eth-optimism/sdk": "^3.3.2",
+    "@eth-optimism/sdk": "^3.3.3",
     "@pinia/nuxt": "^0.5.1",
     "@web3modal/ethers5": "^4.0.10",
     "animate.css": "^4.1.1",

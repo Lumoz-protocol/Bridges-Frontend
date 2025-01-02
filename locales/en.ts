@@ -3,7 +3,7 @@ export default {
     assets: 'Assets',
     bridge: 'Bridge',
     activities: 'Activities',
-    add: 'Add Matr1x To Wallet',
+    add: 'Add UXLINK To Wallet',
     gasFaucet: 'Gas Faucet'
   },
   wallet: {

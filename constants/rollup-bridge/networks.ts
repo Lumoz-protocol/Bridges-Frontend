@@ -1,4 +1,4 @@
-import MATR1X from '@/assets/img/network/matr1x.jpg'
+import UXLINK from '@/assets/img/network/uxlink.jpg'
 import ETH from '@/assets/img/network/eth.svg'
 import { NETWORK } from '../../env'
 import { ethers } from 'ethers'
@@ -40,42 +40,23 @@ const getRollup = (network: string) => {
     case 'testnet':
       return {
         layer1: 'Sepolia',
-        name: 'Matr1x',
-        chainId: 240708,
-        customizeGasName: 'ETH',
-        customizeGasSymbol: 'ETH',
+        name: 'UXLINK',
+        chainId: 241230,
+        customizeGasName: 'UXLINK',
+        customizeGasSymbol: 'UXLINK',
         customizeGasDecimals: 18,
-        customizeGasAddress: '0x0000000000000000000000000000000000000000',
-        img: MATR1X,
-        rpcUrl: 'https://alpha-zkrollup-rpc.lumoz.org/matr1x',
-        explorerUrl: 'https://matr1x.zkevm.lumoz.info',
-        zkBridgeServerUrl: 'https://alpha-zkrollup-service.lumoz.org/matr1x/',
+        customizeGasAddress: '0xDaAD01cdcEC5318C7899AF31331564c6c3F3643c',
+        img: UXLINK,
+        rpcUrl: 'https://alpha-zkrollup-rpc.lumoz.org/uxlink',
+        explorerUrl: 'https://uxlink.zkevm.lumoz.info',
         isGasFree: false,
         nativeTokenName: "ETH",
         nativeTokenSymbol: "ETH",
         nativeTokenDecimals: 18,
-        multicallContractAddress: '0x30a89c9cb8e20f6154cebde925d8c2369301364f'
+        multicallContractAddress: '0xdd612E5fAcBE822fcb3eCb44F1B9Bef06Bff2877'
       }
     case 'mainnet':
-      return {
-        // zkevmType: 'Polygon zkEVM',
-        // layer1: 'Ethereum',
-        // name: 'ZKFair',
-        // chainId: 42766,
-        // customizeGasName: 'USD Coin',
-        // customizeGasSymbol: 'USDC',
-        // customizeGasDecimals: 6,
-        // customizeGasAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        // img: ZKFAIR_IMG,
-        // rpcUrl: 'https://rpc.zkfair.io',
-        // explorerUrl: 'https://scan.zkfair.io',
-        // zkBridgeServerUrl: 'https://bridge-service.zkfair.io',
-        // isGasFree: false,
-        // nativeTokenName: "ETH",
-        // nativeTokenSymbol: "ETH",
-        // nativeTokenDecimals: 18,
-        // multicallContractAddress: '0x1CbC08bf0D48b18F9f97796c61352b192d1850A5'
-      }
+      return {}
   }
 }
 
@@ -84,19 +65,28 @@ const getTokens = (network: string) => {
   switch (network) {
     case 'testnet':
       return [
+        // {
+        //   name: 'ETH',
+        //   symbol: 'ETH',
+        //   layer1Address: '0x0000000000000000000000000000000000000000',
+        //   rollupAddress: '0x4200000000000000000000000000000000000006',
+        //   rollupDecimals: 18,
+        //   layer1Decimals: 18
+        // },
         {
-          name: 'ETH',
-          symbol: 'ETH',
-          layer1Address: '0x0000000000000000000000000000000000000000',
+          name: 'UXLINK',
+          symbol: 'UXLINK',
+          layer1Address: '0xDaAD01cdcEC5318C7899AF31331564c6c3F3643c',
           rollupAddress: '0x0000000000000000000000000000000000000000',
+          gasToken: true,
           rollupDecimals: 18,
           layer1Decimals: 18
         },
         {
-          name: 'Matr1x',
+          name: 'M1',
           symbol: 'M1',
           layer1Address: '0x44cDE76f09F0Bb81d16d1D9a7762A159D4F39FB7',
-          rollupAddress: '0xaFaFe9a2D6629bFE796c1ab56F31CF8504B33191',
+          rollupAddress: '0xe631fad97761cA0f3347e33Fa976526A390Dcc33',
           rollupDecimals: 18,
           layer1Decimals: 18
         }
@@ -110,22 +100,28 @@ const getL2Config = (network: string) => {
   switch (network) {
     case 'testnet':
       return {
-        AddressManager: '0x50A505ddB359f90B475B7E4Fb659Ab43246fc953',
-        L1CrossDomainMessenger: '0xd4ceEe20a0b05c3C15A474708e4C9D26664270e8',
-        L1StandardBridge: '0xDAa301A3abeFF04CBC560109DA63b5B30F0F73E9',
-        OptimismPortal: '0x172256616CBEbB37f53E449412D22e0A731682bf',
-        L2OutputOracle: '0x917ce42E207cB3873F3B467Bffa95386544a2e5b',
+        AddressManager: '0x9Bc65d0648fDE969CBbAd704079dA16D488d5905',
+        L1CrossDomainMessenger: '0x2912F88b1a4B9Bf29599958D29c305b8C7C8197f',
+        L1StandardBridge: '0x63bc92ff4D11e135337DBb2406f54F7f5570fD88',
+        OptimismPortal: '0x8818869a2677A2D9599b715A4F29c90aF0D9FFBE',
+        L2OutputOracle: '0x3e89ACcAEFE79369DcC358cF8648FC0F2Eac5818',
+        L2ToL1MessagePasser: '0x4200000000000000000000000000000000000016',
+        L2StandardBridge: '0x4200000000000000000000000000000000000010',
+        L2BaseTag: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
         StateCommitmentChain: ethers.constants.AddressZero,
         CanonicalTransactionChain: ethers.constants.AddressZero,
         BondManager: ethers.constants.AddressZero
       }
     case 'mainnet':
       return {
-        AddressManager: '0x50A505ddB359f90B475B7E4Fb659Ab43246fc953',
-        L1CrossDomainMessenger: '0xd4ceEe20a0b05c3C15A474708e4C9D26664270e8',
-        L1StandardBridge: '0xDAa301A3abeFF04CBC560109DA63b5B30F0F73E9',
-        OptimismPortal: '0x172256616CBEbB37f53E449412D22e0A731682bf',
-        L2OutputOracle: '0x917ce42E207cB3873F3B467Bffa95386544a2e5b',
+        AddressManager: '',
+        L1CrossDomainMessenger: '',
+        L1StandardBridge: '',
+        OptimismPortal: '',
+        L2OutputOracle: '',
+        L2ToL1MessagePasser: '0x4200000000000000000000000000000000000016',
+        L2StandardBridge: '0x4200000000000000000000000000000000000010',
+        L2BaseTag: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
         StateCommitmentChain: ethers.constants.AddressZero,
         CanonicalTransactionChain: ethers.constants.AddressZero,
         BondManager: ethers.constants.AddressZero
