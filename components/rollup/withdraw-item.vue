@@ -48,13 +48,14 @@
     </div>
 </template>
 <script setup lang="ts">
+import { getWithdrawParams } from '~/libs/viem-config'
 import { useWalletStore, useRollupBridgeStore } from '@/stores'
 import { notifySuccess, notifyError, formatAddress } from '@/libs/utils'
 import { ethers } from 'ethers'
 import { getBridge } from '@/stores/wallet'
 import { LAYER1, ROLLUP, TOKENS, L2Config } from '~~/constants/rollup-bridge/networks'
-import { CrossChainMessenger } from '@eth-optimism/sdk'
 import { getBridgeStatus } from '@/api/api'
+import { OptimismPortalContract } from '~/libs/ethers/contract'
 
 const walletStore = useWalletStore()
 const rollupBridgeStore = useRollupBridgeStore()
@@ -142,9 +143,10 @@ const getS = async() => {
             case 'In challenge period': status.value = 4;break;
             case 'Ready for relay': status.value = 5;break;
             case 'Relayed': status.value = 6;break;
+            default: status.value = 2;break;
         }
     } catch {
-        status.value = -1
+        status.value = 2
     }
 }
 
@@ -155,25 +157,15 @@ const startProve = async() => {
         if (!switched) {
             throw new Error(vm?.$t('notSwitch'))
         }
-        const l1Signer = getBridge().web3Provider.getSigner()
-        const l2Provider = new ethers.providers.JsonRpcProvider(ROLLUP.rpcUrl)
-        const messenger = new CrossChainMessenger({
-            l1ChainId: LAYER1.chainId,
-            l2ChainId: ROLLUP.chainId,
-            l1SignerOrProvider: l1Signer,
-            l2SignerOrProvider: l2Provider,
-            contracts: {
-                l1: {
-                    ...L2Config
-                }
-            }
-        })
-        const tx = await messenger.proveMessage(props.item.transactionHash)
+        const args = await getWithdrawParams(props.item.transactionHash, walletStore.account)
+        const _contract = new OptimismPortalContract(getBridge().web3Provider.getSigner())
+        const tx = await _contract.contract.proveWithdrawalTransaction(...args)
         await tx.wait()
         status.value = 4
         loading.value = false
         notifySuccess('Prove success!')
-    } catch {
+    } catch(e) {
+        console.log(e)
         loading.value = false
         notifyError('Prove failed!')
     }
@@ -186,26 +178,16 @@ const startRelay = async() => {
         if (!switched) {
             throw new Error(vm?.$t('notSwitch'))
         }
-        const l1Signer = getBridge().web3Provider.getSigner()
-        const l2Provider = new ethers.providers.JsonRpcProvider(ROLLUP.rpcUrl)
-        const messenger = new CrossChainMessenger({
-            l1ChainId: LAYER1.chainId,
-            l2ChainId: ROLLUP.chainId,
-            l1SignerOrProvider: l1Signer,
-            l2SignerOrProvider: l2Provider,
-            contracts: {
-                l1: {
-                    ...L2Config
-                }
-            }
-        })
-        const tx = await messenger.finalizeMessage(props.item.transactionHash)
+        const args = await getWithdrawParams(props.item.transactionHash, walletStore.account)
+        const contract = new OptimismPortalContract(getBridge().web3Provider.getSigner())
+        const tx = await contract.contract.finalizeWithdrawalTransaction(args[0])
         await tx.wait()
         status.value = 6
         loading.value = false
         rollupBridgeStore.getLayer1Balances(walletStore.account)
         notifySuccess('Withdraw success!')
-    } catch {
+    } catch(e) {
+        console.log(e)
         loading.value = false
         notifyError('Withdraw failed!')
     }

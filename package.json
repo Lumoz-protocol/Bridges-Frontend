@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@element-plus/nuxt": "^1.0.7",
-    "@eth-optimism/sdk": "^3.3.3",
+    "@eth-optimism/core-utils": "^0.13.2",
+    "@eth-optimism/sdk": "3.3.2",
     "@pinia/nuxt": "^0.5.1",
     "@web3modal/ethers5": "^4.0.10",
     "animate.css": "^4.1.1",
@@ -26,6 +27,7 @@
     "moment": "^2.30.1",
     "nuxt": "^3.10.3",
     "react": "^18.3.1",
+    "viem": "^2.22.1",
     "vue": "^3.4.19",
     "vue-gtag-next": "^1.14.0",
     "vue-router": "^4.3.0"

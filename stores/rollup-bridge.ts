@@ -108,8 +108,32 @@ export const useRollupBridgeStore = defineStore('rollup-bridge', {
         }
       })
       const withdrawMessages = await messenger.getWithdrawalsByAddress(account)
-      console.log(withdrawMessages)
-      this.activities = withdrawMessages
+      const lists = this.getWithdrawCustokenList(account)
+      this.activities = [...lists, ...withdrawMessages].sort((a, b) => b.blockNumber - a.blockNumber)
+    },
+    iniWithdrawSuccess(item: any) {
+      let list = []
+      try {
+        let _list = JSON.parse(localStorage.getItem('uxlink-withdraw-records'))
+        if (Array.isArray(_list)) {
+          list = _list
+        }
+      } catch {
+        list = []
+      }
+      list.unshift(item)
+      localStorage.setItem('uxlink-withdraw-records', JSON.stringify(list))
+    },
+    getWithdrawCustokenList(account: string) {
+      try {
+        let list = JSON.parse(localStorage.getItem('uxlink-withdraw-records'))
+        if (Array.isArray(list)) {
+          return list.filter(item => item.from.toLowerCase() === account.toLowerCase())
+        }
+        return []
+      } catch {
+        return []
+      }
     }
   }
 })

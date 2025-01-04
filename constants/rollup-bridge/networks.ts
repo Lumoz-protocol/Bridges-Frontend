@@ -108,6 +108,7 @@ const getL2Config = (network: string) => {
         L2ToL1MessagePasser: '0x4200000000000000000000000000000000000016',
         L2StandardBridge: '0x4200000000000000000000000000000000000010',
         L2BaseTag: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+        DisputeGameFactory: '0x7c63078404d849327480E0C7c7f0E91FcFE3513B',
         StateCommitmentChain: ethers.constants.AddressZero,
         CanonicalTransactionChain: ethers.constants.AddressZero,
         BondManager: ethers.constants.AddressZero
@@ -122,6 +123,7 @@ const getL2Config = (network: string) => {
         L2ToL1MessagePasser: '0x4200000000000000000000000000000000000016',
         L2StandardBridge: '0x4200000000000000000000000000000000000010',
         L2BaseTag: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+        DisputeGameFactory: '',
         StateCommitmentChain: ethers.constants.AddressZero,
         CanonicalTransactionChain: ethers.constants.AddressZero,
         BondManager: ethers.constants.AddressZero

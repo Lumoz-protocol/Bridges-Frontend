@@ -1,5 +1,5 @@
 <template>
-  <div class="relative lg:flex justify-between">
+  <div class="relative lg:flex justify-between mt-40 lg:mt-0">
     <div class="bg-filter bg-[#00000088] rounded-xl overflow-hidden">
       <div class="flex p-4 pb-0" :class="reverse ? 'flex-col-reverse' : 'flex-col'">
         <div>
@@ -129,7 +129,7 @@
         <RollupSubmitButton v-else :submit="submit" :reverse="reverse" :balance="reverse ? rollupBridgeStore.token?.rollupBalance : rollupBridgeStore.token?.layer1Balance" :amount="amount" :fees="fees" :fees-loading="feesLoading" @on-click="confirmButton" />
       </div>
     </div>
-    <div class="mt-4 lg:(mt-0 ml-8)">
+    <div class="mt-4 lg:(mt-0 ml-8) h-120 overflow-y-auto">
       <RollupWithdrawItem v-for="item in rollupBridgeStore.activities" :item="item" :key="item.transactionHash" />
     </div>
   </div>
@@ -139,7 +139,7 @@ import { CrossChainMessenger } from '@eth-optimism/sdk'
 import { ElNotification } from 'element-plus'
 import { ethers } from 'ethers'
 import { BASE_TOKEN_CONTRACT_URL } from '@/constants'
-import { L2Config } from '@/constants/rollup-bridge/networks'
+import { L2Config, ROLLUP } from '@/constants/rollup-bridge/networks'
 import { useWalletStore, useRollupBridgeStore } from '@/stores'
 import { getBridge } from '@/stores/wallet'
 import { notifySuccess, notifyError } from '@/libs/utils'
@@ -330,7 +330,9 @@ async function confirm() {
       // const contract = new OptimismPortalContract(getBridge().web3Provider.getSigner())
       // tx = await contract.depositERC20Transaction(transAddress, transAmount, decimals)
     } else {
-      tx = await messenger.withdrawETH(ethers.utils.parseUnits(transAmount.toString(), decimals))
+      // tx = await messenger.withdrawETH(ethers.utils.parseUnits(transAmount.toString(), decimals))
+      const contract = new L2ToL1MessagePasserContract(getBridge().web3Provider.getSigner())
+      tx = await contract.initiateWithdrawal(transAddress, transAmount, decimals)
     }
   } else {
     if (!reversed) {
@@ -350,6 +352,22 @@ async function confirm() {
   txHash.value = tx.hash
 
   submit.value = 0
+  if (reversed && tokenContractAddress === BASE_TOKEN_CONTRACT_URL) {
+    const provider = new ethers.providers.StaticJsonRpcProvider(ROLLUP?.rpcUrl, { name: '',  chainId: ROLLUP?.chainId })
+    const _tx = await provider.getTransaction(tx.hash)
+    const item = {
+        amount: '0x16345785d8a0000',
+        data: "0x",
+        direction: 1,
+        blockNumber: _tx.blockNumber,
+        from: walletStore.account,
+        l1Token: ROLLUP?.customizeGasAddress,
+        l2Token: L2Config?.L2BaseTag,
+        to: walletStore.account,
+        transactionHash: tx.hash
+    }
+    rollupBridgeStore.iniWithdrawSuccess(item)
+  }
   initFinish(reversed ? vm?.$t('home.withdraw') : vm?.$t('home.deposit'), transAmount, symbol, reversed ? vm?.$t('home.arrivel2') : vm?.$t('home.arrivel1'))
   if (reversed) {
     rollupBridgeStore.getRollupBalances(walletStore.account)
@@ -423,11 +441,11 @@ const initFinish = (title: string, amount: number, symbol: string, content: stri
       <div class="mx-4 mb-2">
         <div class="font-bold">${title} ${amount} ${symbol}</div>
         <div>${content}</div>
-        <a class="text-primary-900 cursor-pointer opacity-90 hover:opacity-100" href="/activities">${vm.$t('home.view')}</a>
       </div>
       <div class="home-el-no-fade h-1 bg-primary-900"></div>
     `
   })
+  // <a class="text-primary-900 cursor-pointer opacity-90 hover:opacity-100" href="/activities">${vm.$t('home.view')}</a>
 }
 </script>
 <style lang="less">

@@ -132,6 +132,28 @@ export class OptimismPortalContract {
     const _amount = ethers.utils.parseUnits(amount.toString(), decimals)
     return await this.contract.depositERC20Transaction(address, _amount, _amount, 50000, false, '0x')
   }
+
+  async proveWithdrawalTransaction(withdrawal: any) {
+    return await this.contract.proveWithdrawalTransaction({
+      nonce: withdrawal.messageNonce,
+      sender: withdrawal.sender,
+      target: withdrawal.target,
+      value: withdrawal.value,
+      gasLimit: withdrawal.minGasLimit,
+      data: withdrawal.message
+    })
+  }
+
+  async finalizeWithdrawalTransaction(withdrawal: any) {
+    return await this.contract.finalizeWithdrawalTransaction({
+      nonce: withdrawal.messageNonce,
+      sender: withdrawal.sender,
+      target: withdrawal.target,
+      value: withdrawal.value,
+      gasLimit: withdrawal.minGasLimit,
+      data: withdrawal.message
+    })
+  }
 }
 
 export class L1StandardBridgeContract {

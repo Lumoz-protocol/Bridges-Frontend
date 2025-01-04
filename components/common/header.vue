@@ -1,5 +1,9 @@
 <template>
   <div class="fixed z-10 top-0 left-0 right-0 h-20 bg-filter flex items-center justify-between px-4">
+    <div class="font-bold flex items-center w-30">
+      <img src="@/assets/img/network/uxlink.jpg" class="w-12 mr-2 rounded-full">
+      UXLINK Bridge
+    </div>
     <div class="hidden xl:flex items-center w-full justify-between h-full">
       <div></div>
       <CommonSingleNavItem v-for="item in singleMenus" :key="item.name" :item="item" @click="hideMenu" />
