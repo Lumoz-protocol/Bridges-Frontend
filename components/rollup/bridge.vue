@@ -184,6 +184,7 @@ watch(
   }
 )
 
+
 function clickReverse() {
   reverse.value = !reverse.value
 }
@@ -356,7 +357,7 @@ async function confirm() {
     const provider = new ethers.providers.StaticJsonRpcProvider(ROLLUP?.rpcUrl, { name: '',  chainId: ROLLUP?.chainId })
     const _tx = await provider.getTransaction(tx.hash)
     const item = {
-        amount: '0x16345785d8a0000',
+        amount: ethers.utils.parseEther(transAmount.toString()).toHexString(),
         data: "0x",
         direction: 1,
         blockNumber: _tx.blockNumber,
