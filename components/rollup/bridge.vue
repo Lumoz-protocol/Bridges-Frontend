@@ -166,6 +166,9 @@ const overAmount = computed(() => {
   return Number(amount.value) > Number(balance)
 })
 
+onMounted(() => {
+  notifySuccess(11111)
+})
 
 watch(
   () => [rollupBridgeStore.token, rollupBridgeStore.rollup],
