@@ -10,8 +10,6 @@
 import tokens from '@/libs/tokens.json'
 import { useRollupBridgeStore } from '@/stores'
 
-
-
 const rollupBridgeStore = useRollupBridgeStore()
 const props = withDefaults(
   defineProps<{

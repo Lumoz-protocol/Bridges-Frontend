@@ -328,10 +328,8 @@ async function confirm() {
   let tx:any = null
   if (tokenContractAddress === BASE_TOKEN_CONTRACT_URL) {
     if (!reversed) {
-      // const contract = new OptimismPortalContract(getBridge().web3Provider.getSigner())
-      // tx = await contract.depositERC20Transaction(transAddress, transAmount, decimals)
+     
     } else {
-      // tx = await messenger.withdrawETH(ethers.utils.parseUnits(transAmount.toString(), decimals))
       const contract = new L2ToL1MessagePasserContract(getBridge().web3Provider.getSigner())
       tx = await contract.initiateWithdrawal(transAddress, transAmount, decimals)
     }

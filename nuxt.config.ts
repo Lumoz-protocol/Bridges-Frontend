@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  css: ['@/assets/style/index.less', 'animate.css/animate.css','hover.css/less/hover.less'],
+  css: ['@/assets/style/index.less', 'hover.css/less/hover.less'],
 
   typescript: {
     shim: false
@@ -15,10 +15,6 @@ export default defineNuxtConfig({
 
   i18n: {
     vueI18n: './i18n.config.ts'
-  },
-
-  build: {
-    transpile: ['echarts']
   },
 
   plugins: [

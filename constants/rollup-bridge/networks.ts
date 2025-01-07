@@ -19,7 +19,6 @@ const getLayer1 = (network: string) => {
         }
     case 'mainnet':
       return {
-          // merlin chain info
           // layer1: 'Ethereum',
           // name: 'Ethereum',
           // chainId: 1,
@@ -130,9 +129,6 @@ const getL2Config = (network: string) => {
       }
   }
 }
-
-
-
 
 export const LAYER1 = getLayer1(NETWORK)
 export const ROLLUP = getRollup(NETWORK)

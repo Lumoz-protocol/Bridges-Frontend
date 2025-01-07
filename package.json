@@ -1,5 +1,5 @@
 {
-  "name": "bridge-op",
+  "name": "uxlink-bridge",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,9 +16,7 @@
     "@eth-optimism/sdk": "3.3.2",
     "@pinia/nuxt": "^0.5.1",
     "@web3modal/ethers5": "^4.0.10",
-    "animate.css": "^4.1.1",
     "axios": "^1.6.7",
-    "bignumber.js": "^9.1.2",
     "copy-to-clipboard": "^3.3.3",
     "element-plus": "2.6.2",
     "ethereum-multicall": "^2.24.0",
