@@ -193,6 +193,7 @@ async function confirmButton() {
   try {
     await confirm()
   } catch (e) {
+    console.log(e)
     if (e.code === -32603) {
       notifyError(vm?.$t('insufficient1') + reverse.value ? 'USDC' : 'ETH' + vm?.$t('insufficient2'))
     } else {

@@ -6,7 +6,8 @@ const getConfig = (network: string) => {
   switch (network) {
     case 'testnet':
       return {
-        BRIDGE_SERVICE_API: 'https://alpha-zkrollup-service.lumoz.org/uxlink/transactions/'
+        // BRIDGE_SERVICE_API: 'https://testnet-scan.uxlinkone.com/api/v2/transactions/'
+        BRIDGE_SERVICE_API: 'http://103.231.86.36:10001/api/v2/transactions/'
       }
     case 'mainnet':
       return {
