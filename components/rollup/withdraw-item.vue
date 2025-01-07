@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-xl mb-2 w-full lg:w-80">
+    <div class="rounded-xl mb-2 w-full lg:w-90">
         <div class="bg-[#ffffff22] p-4 rounded-xl">
             <div class="flex items-center justify-between">
                 <div class="flex items-center text-sm" :class="item.direction == 1 ? 'flex-row-reverse' : ''">
