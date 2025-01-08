@@ -6,7 +6,7 @@ const getConfig = (network: string) => {
   switch (network) {
     case 'testnet':
       return {
-        BRIDGE_SERVICE_API: 'https://testnet-scan.uxlinkone.com/api/v2/transactions/'
+        BRIDGE_SERVICE_API: 'https://testnet-bridge.uxlinkone.com/bridge-api/transactions/'
       }
     case 'mainnet':
       return {
